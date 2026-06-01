@@ -35,7 +35,8 @@
                 <div class="space-y-4">
                     <div>
                         <label for="nisnInput" class="block text-sm font-medium text-gray-700 mb-1">NISN Siswa</label>
-                        <input type="number" id="nisnInput" placeholder="Contoh: 1234567890" 
+                        <!-- Diubah ke type="text" agar angka 0 di depan tidak dipangkas otomatis oleh browser -->
+                        <input type="text" id="nisnInput" inputmode="numeric" pattern="[0-9]*" placeholder="Contoh: 0114414687" 
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-lg tracking-wider">
                     </div>
                     <button onclick="cekKelulusan()" 
@@ -61,7 +62,7 @@
 
                     <div class="text-center border-b-2 border-gray-800 pb-4 mb-6 z-10 relative">
                         <h2 class="text-lg md:text-xl font-bold uppercase tracking-wide text-gray-900">Pemerintah Kabupaten Klungkung</h2>
-                        <h2 class="text-xl md:text-2xl font-black uppercase tracking-wide text-gray-900">Dinas Pendidikan Kepemuidaan Dan Olah Raga</h2>
+                        <h2 class="text-xl md:text-2xl font-black uppercase tracking-wide text-gray-900">Dinas Pendidikan Kepemudaan Dan Olah Raga</h2>
                         <h1 class="text-2xl md:text-3xl font-black uppercase tracking-wide text-blue-900 mt-1">SMP NEGERI 2 NUSA PENIDA</h1>
                         <p class="text-xs text-gray-600 mt-1">Alamat: Banjar Nyuh, Desa Ped, Kecamatan Nusa Penida, Kabupaten Klungkung, Bali</p>
                     </div>
@@ -100,7 +101,7 @@
 
                         <div class="flex justify-end mt-12">
                             <div class="text-center w-64">
-                                <p class="text-sm">Nusa Penida, Mei 2026</p>
+                                <p class="text-sm">Nusa Penida, 2 Juni 2026</p>
                                 <p class="text-sm font-semibold mb-16">Kepala SMP Negeri 2 Nusa Penida,</p>
                                 <div class="border-b border-gray-800 w-full mx-auto">I Wayan Sujana,S.Pd.,M.Pd</div>
                                 <p class="text-xs text-gray-500 mt-1">NIP. 19771230 200902 1 003</p>
@@ -214,11 +215,11 @@
             { nama: "Ni Nengah Sastri", nisn: "0114203031", kelas: "9C" },
             { nama: "Ni Nyoman Ayu Tresna Dewi", nisn: "0106346458", kelas: "9C" },
             { nama: "Ni Putu Chandra Resmawati", nisn: "0114175394", kelas: "9C" },
-            { nama: "NI PUTU LINA DEVI TRIYANI", 'nisn': "0107253077", kelas: "9C" },
+            { nama: "NI PUTU LINA DEVI TRIYANI", nisn: "0107253077", kelas: "9C" },
             { nama: "NI PUTU SANDRA KIRANA", nisn: "0114055517", kelas: "9C" },
             { nama: "Ni Putu Tina Lestari", nisn: "0114203076", kelas: "9C" },
             { nama: "Nyoman Tya Dinda Putri", nisn: "0114115160", kelas: "9C" },
-            { nama: "PUTU RADHA PIANI", 'nisn': "0111224046", kelas: "9C" },
+            { nama: "PUTU RADHA PIANI",  nisn: "0111224046", kelas: "9C" },
 
             // Kelas 9D
             { nama: "AGUS LESTARI", nisn: "0115582327", kelas: "9D" },
@@ -240,7 +241,7 @@
             { nama: "Ni Kadek Meisika Yanti", nisn: "0114224170", kelas: "9D" },
             { nama: "NI KADEK OLIVIA MAWESWARI", nisn: "0112102838", kelas: "9D" },
             { nama: "NI KETUT TINA", nisn: "0096534563", kelas: "9D" },
-            { nama: "NI KOMANG ANJANI", 'nisn': "0111147520", kelas: "9D" },
+            { nama: "NI KOMANG ANJANI", nisn: "0111147520", kelas: "9D" },
             { nama: "NI KOMANG DEVI", nisn: "0114203056", kelas: "9D" },
             { nama: "Ni Komang Indah Puspita Yani", nisn: "0114055533", kelas: "9D" },
             { nama: "Ni Komang Trisnawati", nisn: "0107203113", kelas: "9D" },
@@ -249,7 +250,7 @@
             { nama: "NI PUTU EKA RATNA FEBRIANI", nisn: "0114227181", kelas: "9D" },
             { nama: "NI WAYAN DEVI PURNAMI", nisn: "0113225650", kelas: "9D" },
             { nama: "NI WAYAN KARTIKA", nisn: "0113554172", kelas: "9D" },
-            { nama: "PUTU MERI AWATI", 'nisn': "0115582329", kelas: "9D" },
+            { nama: "PUTU MERI AWATI", nisn: "0115582329", kelas: "9D" },
 
             // Kelas 9E
             { nama: "ADLI FADILLAH", nisn: "0106095932", kelas: "9E" },
@@ -287,14 +288,15 @@
             { nama: "TEGUH ARYO WICAKSONO", nisn: "0109963180", kelas: "9E" }
         ];
 
-        // Fungsi Memeriksa NISN Siswa
+        // Fungsi Memeriksa NISN Siswa (SUDAH DIPERBAIKI SEMPURNA)
         function cekKelulusan() {
-            const inputVal = document.getElementById('nisnInput').value.trim();
+            // Mengambil input teks, hapus spasi, dan bersihkan dari karakter selain angka
+            const inputVal = document.getElementById('nisnInput').value.trim().replace(/\D/g, '');
             const errorMsg = document.getElementById('errorMessage');
             const searchSec = document.getElementById('searchSection');
             const resultSec = document.getElementById('resultSection');
 
-            // Reset Error Message
+            // Reset Pesan Error
             errorMsg.classList.add('hidden');
 
             if (inputVal === '') {
@@ -303,20 +305,24 @@
                 return;
             }
 
-            // Cari data siswa berdasarkan NISN (Mendukung kecocokan string)
-            const siswa = dataSiswa.find(s => s.nisn === inputVal || parseInt(s.nisn) === parseInt(inputVal));
+            // Mencocokkan data string secara utuh, sehingga angka 0 di depan tidak akan hilang
+            const siswa = dataSiswa.find(s => {
+                const dbNisnClean = s.nisn.trim();
+                // Validasi ganda: Cocok string murni ATAU cocok nilai matematikanya (jika diketik tanpa angka 0)
+                return dbNisnClean === inputVal || parseInt(dbNisnClean, 10) === parseInt(inputVal, 10);
+            });
 
             if (siswa) {
-                // Set data ke komponen Surat
+                // Set data ke komponen Surat Keterangan Kelulusan
                 document.getElementById('resNama').innerText = siswa.nama;
-                document.getElementById('resNisn').innerText = siswa.nisn;
+                document.getElementById('resNisn').innerText = siswa.nisn; // Angka 0 di depan tetap tampil utuh di sini
                 document.getElementById('resKelas').innerText = siswa.kelas;
 
-                // Transisi Tampilan
+                // Transisi Tampilan dari menu pencarian ke Surat Kelulusan
                 searchSec.classList.add('hidden');
                 resultSec.classList.remove('hidden');
             } else {
-                // Tampilkan pesan error jika data tidak ditemukan
+                // Tampilkan pesan error jika data memang tidak terdaftar dalam database
                 errorMsg.innerText = "⚠️ Data NISN tidak ditemukan. Periksa kembali nomor yang Anda masukkan.";
                 errorMsg.classList.remove('hidden');
             }
