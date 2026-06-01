@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelulusan SMP Negeri 2 Nusa Penida</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        @media print {
+            body * { visibility: hidden; }
+            #suratKelulusan, #suratKelulusan * { visibility: visible; }
+            #suratKelulusan { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col justify-between">
+
+    <header class="bg-blue-800 text-white py-6 shadow-md text-center">
+        <h1 class="text-xl md:text-2xl font-bold tracking-wide">SMP NEGERI 2 NUSA PENIDA</h1>
+        <p class="text-sm md:text-base text-blue-200 mt-1">Sistem Informasi Pengumuman Kelulusan Kelas 9</p>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 md:p-8">
+            
+            <div id="searchSection">
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800">Cek Status Kelulusan Anda</h2>
+                    <p class="text-gray-500 text-sm mt-1">Masukkan Nomor Induk Siswa Nasional (NISN) secara benar</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="nisnInput" class="block text-sm font-medium text-gray-700 mb-1">NISN Siswa</label>
+                        <input type="number" id="nisnInput" placeholder="Contoh: 1234567890" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-lg tracking-wider">
+                    </div>
+                    <button onclick="cekKelulusan()" 
+                        class="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg shadow-md transition duration-200 cursor-pointer text-center block">
+                        Periksa Kelulusan
+                    </button>
+                    <div id="errorMessage" class="text-red-600 text-sm font-medium text-center hidden">
+                        ⚠️ Data NISN tidak ditemukan. Periksa kembali nomor yang Anda masukkan.
+                    </div>
+                </div>
+            </div>
+
+            <div id="resultSection" class="hidden animate-fade-in">
+                <button onclick="kembaliCari()" class="no-print mb-6 flex items-center text-blue-700 hover:text-blue-900 font-medium cursor-pointer">
+                    ← Kembali Pencarian
+                </button>
+
+                <div id="suratKelulusan" class="border-4 border-double border-gray-400 p-6 md:p-8 bg-white relative overflow-hidden">
+                    
+                    <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none select-none z-0">
+                        <h1 class="text-7xl md:text-9xl font-black text-green-600 transform -rotate-12 border-8 border-green-600 p-4 rounded-xl">LULUS</h1>
+                    </div>
+
+                    <div class="text-center border-b-2 border-gray-800 pb-4 mb-6 z-10 relative">
+                        <h2 class="text-lg md:text-xl font-bold uppercase tracking-wide text-gray-900">Pemerintah Kabupaten Klungkung</h2>
+                        <h2 class="text-xl md:text-2xl font-black uppercase tracking-wide text-gray-900">Dinas Pendidikan Kepemuidaan Dan Olah Raga</h2>
+                        <h1 class="text-2xl md:text-3xl font-black uppercase tracking-wide text-blue-900 mt-1">SMP NEGERI 2 NUSA PENIDA</h1>
+                        <p class="text-xs text-gray-600 mt-1">Alamat: Banjar Nyuh, Desa Ped, Kecamatan Nusa Penida, Kabupaten Klungkung, Bali</p>
+                    </div>
+
+                    <div class="z-10 relative text-gray-800 text-sm md:text-base leading-relaxed">
+                        <h3 class="text-center font-bold text-base md:text-lg underline uppercase mb-6">Surat Keterangan Kelulusan</h3>
+                        
+                        <p class="mb-4">Berdasarkan hasil rapat pleno Dewan Guru SMP Negeri 2 Nusa Penida mengenai kelulusan peserta didik Tahun Ajaran yang berlaku, dengan ini Kepala Sekolah menerangkan bahwa:</p>
+                        
+                        <table class="w-full my-4 border-collapse text-left">
+                            <tr>
+                                <td class="w-1/3 py-1 font-semibold">Nama Siswa</td>
+                                <td class="w-4 py-1">:</td>
+                                <td id="resNama" class="py-1 font-bold uppercase text-gray-900"></td>
+                            </tr>
+                            <tr>
+                                <td class="py-1 font-semibold">NISN</td>
+                                <td class="py-1">:</td>
+                                <td id="resNisn" class="py-1 tracking-wider"></td>
+                            </tr>
+                            <tr>
+                                <td class="py-1 font-semibold">Kelas / Rombel</td>
+                                <td class="py-1">:</td>
+                                <td id="resKelas" class="py-1 font-semibold"></td>
+                            </tr>
+                        </table>
+
+                        <p class="mb-6">Dinyatakan secara resmi:</p>
+
+                        <div class="bg-green-50 border-2 border-green-500 rounded-xl p-4 text-center my-6">
+                            <span class="block text-gray-600 text-xs uppercase tracking-widest font-semibold mb-1">STATUS KELULUSAN</span>
+                            <span class="text-3xl md:text-4xl font-black text-green-700 tracking-wider">LULUS</span>
+                        </div>
+
+                        <p class="mb-8 text-justify">Selamat atas kelulusan Anda. Surat keterangan ini dapat digunakan sebagaimana mestinya sampai diterbitkannya Ijazah asli dari sekolah.</p>
+
+                        <div class="flex justify-end mt-12">
+                            <div class="text-center w-64">
+                                <p class="text-sm">Nusa Penida, Mei 2026</p>
+                                <p class="text-sm font-semibold mb-16">Kepala SMP Negeri 2 Nusa Penida,</p>
+                                <div class="border-b border-gray-800 w-full mx-auto">I Wayan Sujana,S.Pd.,M.Pd</div>
+                                <p class="text-xs text-gray-500 mt-1">NIP. 19771230 200902 1 003</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="no-print mt-6 flex justify-end">
+                    <button onclick="window.print()" 
+                        class="bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-2.5 rounded-lg shadow transition cursor-pointer flex items-center gap-2">
+                        🖨️ Cetak Surat Kelulusan
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 text-center py-4 text-xs">
+        <p>&copy; 2026 SMP Negeri 2 Nusa Penida. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Database Siswa Lengkap Berdasarkan Gambar Lampiran
+        const dataSiswa = [
+            // Kelas 9A
+            { nama: "I Gede Darma", nisn: "0123478753", kelas: "9A" },
+            { nama: "I Kadek Kaka Sastra Wiguna", nisn: "0114414687", kelas: "9A" },
+            { nama: "I Kadek Agus Januadi", nisn: "0114055520", kelas: "9A" },
+            { nama: "I KADEK ARIMBAWA", nisn: "0103554117", kelas: "9A" },
+            { nama: "I Kadek Indrai", nisn: "0111148079", kelas: "9A" },
+            { nama: "I Kadek Wisnu Prasetyo", nisn: "0111234126", kelas: "9A" },
+            { nama: "I KETUT AGUS ARTIANA", nisn: "0106056627", kelas: "9A" },
+            { nama: "I KETUT YUDIANTARA", nisn: "0094026403", kelas: "9A" },
+            { nama: "I Komang Budai Raditya", nisn: "0112102841", kelas: "9A" },
+            { nama: "I KOMANG RENO", nisn: "0096534571", kelas: "9A" },
+            { nama: "I KOMANG SOMA ARTAWA", nisn: "0106155169", kelas: "9A" },
+            { nama: "I KOMANG WIADNYANA", nisn: "0107212175", kelas: "9A" },
+            { nama: "I Putu Artawan", nisn: "0107203193", kelas: "9A" },
+            { nama: "I PUTU SATYA ANANDA", nisn: "0116128451", kelas: "9A" },
+            { nama: "Ketut Antiyawati", nisn: "0107295461", kelas: "9A" },
+            { nama: "NI KADEK DESI WIDANTARI", nisn: "0113554493", kelas: "9A" },
+            { nama: "Ni Kadek Dian Puspa Laksmi", nisn: "0113554123", kelas: "9A" },
+            { nama: "Ni Komang Iri Yani", nisn: "0117032717", kelas: "9A" },
+            { nama: "NI KOMANG WINDA NATALIA", nisn: "0105552299", kelas: "9A" },
+            { nama: "NI NYOMAN ANGGITA PRATIWI", nisn: "0108212514", kelas: "9A" },
+            { nama: "Ni Nyoman Gita Saraswati", nisn: "0111225653", kelas: "9A" },
+            { nama: "NI PUTU AMELIA LAURA DEYANTI", nisn: "0111224150", kelas: "9A" },
+            { nama: "NI PUTU CINTA SINI ANTARI", nisn: "0114203128", kelas: "9A" },
+            { nama: "NI PUTU GAYATRI", nisn: "0107092546", kelas: "9A" },
+            { nama: "Ni Putu Humala Dewi", nisn: "0105554613", kelas: "9A" },
+            { nama: "NI PUTU NIA PERTIWI", nisn: "0108970091", kelas: "9A" },
+            { nama: "NI PUTU NOVA NATHANIA DEVI WULANDARI", nisn: "0108212069", kelas: "9A" },
+            { nama: "Ni Wayan Dewi Sriastiti", nisn: "0110841174", kelas: "9A" },
+            { nama: "NI WAYAN LUH ASIH", nisn: "0105476566", kelas: "9A" },
+
+            // Kelas 9B
+            { nama: "Ayu Anggreni Pratiwi", nisn: "0117158178", kelas: "9B" },
+            { nama: "I GEDE AGUS SUPAWAN", nisn: "0108294474", kelas: "9B" },
+            { nama: "I Gede Elia Wijayana Adi Putra", nisn: "0106155793", kelas: "9B" },
+            { nama: "I Kadek Agus Satria Mahardi", nisn: "0107049381", kelas: "9B" },
+            { nama: "I KADEK DWI PRAMANA", nisn: "0108339595", kelas: "9B" },
+            { nama: "I Komang Pasek Mahendra", nisn: "0109487941", kelas: "9B" },
+            { nama: "I Made Satya Krisnayana", nisn: "0111034033", kelas: "9B" },
+            { nama: "I Putu Gede Nosa Pratama", nisn: "0103448339", kelas: "9B" },
+            { nama: "I Putu Vipra Subhaktiyana", nisn: "0105121224", kelas: "9B" },
+            { nama: "I WAYAN AGUS YANSON NOMLEKI", nisn: "0107544084", kelas: "9B" },
+            { nama: "I Wayan Sastradana", nisn: "0107190127", kelas: "9B" },
+            { nama: "LUH PUTU PERMATANI FEBRIANI", nisn: "0108212148", kelas: "9B" },
+            { nama: "NI KADEK NILA PRADANI", nisn: "0108332029", kelas: "9B" },
+            { nama: "NI KADEK RANI WULANDARI", nisn: "0111225545", kelas: "9B" },
+            { nama: "Ni Kadek Ratna Sari", nisn: "0111073488", kelas: "9B" },
+            { nama: "NI KADEK WANTINI", nisn: "0111224097", kelas: "9B" },
+            { nama: "NI KADEK YULI PERTIWI", nisn: "0114010338", kelas: "9B" },
+            { nama: "Ni Ketut Aprilia Setia Swati", nisn: "0117112325", kelas: "9B" },
+            { nama: "Ni Ketut Cita Indah Pratiwi", nisn: "0104968158", kelas: "9B" },
+            { nama: "Ni Luh Bakti Ayu Cahyanti", nisn: "0108922133", kelas: "9B" },
+            { nama: "NI LUH RESYA DEVAYANI", nisn: "0107143050", kelas: "9B" },
+            { nama: "Ni Putu Chintya Aprilia", nisn: "0105352668", kelas: "9B" },
+            { nama: "Ni Putu Putri Ayu", nisn: "0105553757", kelas: "9B" },
+            { nama: "Ni Putu Septia Dewi Permatasari", nisn: "0109787133", kelas: "9B" },
+            { nama: "Ni Putu Wahesya Febriyanti", nisn: "0114227183", kelas: "9B" },
+            { nama: "Ni Wayan Tenriani Ananda Putri", nisn: "0115048688", kelas: "9B" },
+            { nama: "PANDE KADEK DEVA REYASA", nisn: "0103554730", kelas: "9B" },
+            { nama: "PUTU ANGGITA MEIANI", nisn: "0115122728", kelas: "9B" },
+            { nama: "RANGGA WIJAYA", nisn: "0103554119", kelas: "9B" },
+
+            // Kelas 9C
+            { nama: "I Gede Rey Raditya Juliana", nisn: "0115793043", kelas: "9C" },
+            { nama: "I Gede Yogi Sutarawan", nisn: "0103554173", kelas: "9C" },
+            { nama: "I Kadek Sedana Yudiantara", nisn: "0108191073", kelas: "9C" },
+            { nama: "I KADEK SURYA ERMAWAN SAPUTRA", nisn: "0103525359", kelas: "9C" },
+            { nama: "I Kadek Wisnu Yudiana", nisn: "0114382548", kelas: "9C" },
+            { nama: "I Ketut Ari Anggara Aditya", nisn: "0114203036", kelas: "9C" },
+            { nama: "I KOMANG ALDI PRATAMA", nisn: "0114241839", kelas: "9C" },
+            { nama: "I Komang Wisnu Jaya Wibawa", nisn: "0105554593", kelas: "9C" },
+            { nama: "I Putu Mahardika Andra Yudha", nisn: "0105553818", kelas: "9C" },
+            { nama: "I Putu Navendra Ananda Pratama", nisn: "0113554181", kelas: "9C" },
+            { nama: "I Putu Satya Darmawan", nisn: "0106122108", kelas: "9C" },
+            { nama: "I WAYAN DEVA RADITYA PRATAMA", nisn: "0108332773", kelas: "9C" },
+            { nama: "I Wayan Arjan Adi Wiguna", nisn: "0111224056", kelas: "9C" },
+            { nama: "I WAYAN TEGAR KRISNANA", nisn: "0113224040", kelas: "9C" },
+            { nama: "LUH DE BERLIANA SUKMA DEVI", nisn: "0111244067", kelas: "9C" },
+            { nama: "NI KADEK AMELIA", nisn: "0113553105", kelas: "9C" },
+            { nama: "Ni Kadek Ayu Sani", nisn: "0111072530", kelas: "9C" },
+            { nama: "NI KADEK DEVIKA ANESTYABONYA ANANDITA", nisn: "0114382506", kelas: "9C" },
+            { nama: "NI KADEK INDAH ADRIANI", nisn: "0115049906", kelas: "9C" },
+            { nama: "NI KADEK LEONY PURNAMI", nisn: "0098375626", kelas: "9C" },
+            { nama: "NI KOMANG MIRAH DESITA", nisn: "0108212516", kelas: "9C" },
+            { nama: "Ni Nengah Sastri", nisn: "0114203031", kelas: "9C" },
+            { nama: "Ni Nyoman Ayu Tresna Dewi", nisn: "0106346458", kelas: "9C" },
+            { nama: "Ni Putu Chandra Resmawati", nisn: "0114175394", kelas: "9C" },
+            { nama: "NI PUTU LINA DEVI TRIYANI", 'nisn': "0107253077", kelas: "9C" },
+            { nama: "NI PUTU SANDRA KIRANA", nisn: "0114055517", kelas: "9C" },
+            { nama: "Ni Putu Tina Lestari", nisn: "0114203076", kelas: "9C" },
+            { nama: "Nyoman Tya Dinda Putri", nisn: "0114115160", kelas: "9C" },
+            { nama: "PUTU RADHA PIANI", 'nisn': "0111224046", kelas: "9C" },
+
+            // Kelas 9D
+            { nama: "AGUS LESTARI", nisn: "0115582327", kelas: "9D" },
+            { nama: "AYU ARIWATI", nisn: "0114203079", kelas: "9D" },
+            { nama: "GEDE DESI ARTHA", nisn: "0114249150", kelas: "9D" },
+            { nama: "I Gede Mahendra", nisn: "0111225575", kelas: "9D" },
+            { nama: "I GEDE RANDE JUTA ELINA", nisn: "0103554129", kelas: "9D" },
+            { nama: "I Gede Setiawan", nisn: "0107253133", kelas: "9D" },
+            { nama: "I KETUT BAYU RISA", nisn: "0108212502", kelas: "9D" },
+            { nama: "I Ketut Juli Diana Pranata", nisn: "0108332156", kelas: "9D" },
+            { nama: "I KOMANG JAYA WIRADIKA", nisn: "0111227038", kelas: "9D" },
+            { nama: "I Made Sanjaya", nisn: "0109158073", kelas: "9D" },
+            { nama: "I Nyoman Sudipta", nisn: "0106155797", kelas: "9D" },
+            { nama: "I Putu Agus Winasaputra", nisn: "0114055512", kelas: "9D" },
+            { nama: "KOMANG DEWI GAYATRI", nisn: "0103553107", kelas: "9D" },
+            { nama: "MARI ARIANTI", nisn: "0105781326", kelas: "9D" },
+            { nama: "Ni Kadek Agnita Lestari", nisn: "0105553157", kelas: "9D" },
+            { nama: "NI KADEK DEVI NOVIANTI", nisn: "0105553817", kelas: "9D" },
+            { nama: "Ni Kadek Meisika Yanti", nisn: "0114224170", kelas: "9D" },
+            { nama: "NI KADEK OLIVIA MAWESWARI", nisn: "0112102838", kelas: "9D" },
+            { nama: "NI KETUT TINA", nisn: "0096534563", kelas: "9D" },
+            { nama: "NI KOMANG ANJANI", 'nisn': "0111147520", kelas: "9D" },
+            { nama: "NI KOMANG DEVI", nisn: "0114203056", kelas: "9D" },
+            { nama: "Ni Komang Indah Puspita Yani", nisn: "0114055533", kelas: "9D" },
+            { nama: "Ni Komang Trisnawati", nisn: "0107203113", kelas: "9D" },
+            { nama: "NI LUH PUTU SINTYA FLORA SEPTIARI", nisn: "0105552223", kelas: "9D" },
+            { nama: "Ni Putu Eka Astriani", nisn: "0113553151", kelas: "9D" },
+            { nama: "NI PUTU EKA RATNA FEBRIANI", nisn: "0114227181", kelas: "9D" },
+            { nama: "NI WAYAN DEVI PURNAMI", nisn: "0113225650", kelas: "9D" },
+            { nama: "NI WAYAN KARTIKA", nisn: "0113554172", kelas: "9D" },
+            { nama: "PUTU MERI AWATI", 'nisn': "0115582329", kelas: "9D" },
+
+            // Kelas 9E
+            { nama: "ADLI FADILLAH", nisn: "0106095932", kelas: "9E" },
+            { nama: "AMANDA APRIANINGSIH", nisn: "0114203129", kelas: "9E" },
+            { nama: "APRILIA AYU NUR'AINI", nisn: "0108922157", kelas: "9E" },
+            { nama: "BAYU AMIN", nisn: "0115122703", kelas: "9E" },
+            { nama: "DEVI FEBRIANI", nisn: "0115122851", kelas: "9E" },
+            { nama: "I GEDE NIKOLA VALENDRA", nisn: "0103522546", kelas: "9E" },
+            { nama: "I KADEK PRADITYA", nisn: "0098214180", kelas: "9E" },
+            { nama: "I KOMANG ALIT NAYAKA ADI WANGSA", nisn: "0114055504", kelas: "9E" },
+            { nama: "I Made Apriana", nisn: "0113552428", kelas: "9E" },
+            { nama: "I Putu Ari Nusantara", nisn: "0103553174", kelas: "9E" },
+            { nama: "I Wayan Aldi Dimas Putra", nisn: "0109911247", kelas: "9E" },
+            { nama: "I Wayan Besat Sutarawan", nisn: "0113227157", kelas: "9E" },
+            { nama: "IHAN DWI SAPUTRA", nisn: "0113553150", kelas: "9E" },
+            { nama: "Ivan Maulana Ubaidillah", nisn: "0117056641", kelas: "9E" },
+            { nama: "KADEK ADLI FAIRUS", nisn: "0111147517", kelas: "9E" },
+            { nama: "MAMUDA NALSABILA", nisn: "0116555569", kelas: "9E" },
+            { nama: "Mutia Nur Kasih", nisn: "0111582101", kelas: "9E" },
+            { nama: "NI KADEK ANGGEL PATRISIA", nisn: "0105141156", kelas: "9E" },
+            { nama: "NI Kadek Devi Novriani", nisn: "0108212451", kelas: "9E" },
+            { nama: "NI KADEK MALIKA CANDRA DEWI", nisn: "0108334464", kelas: "9E" },
+            { nama: "Ni Ketut Triska Ardiana Gita", nisn: "0104968101", kelas: "9E" },
+            { nama: "NI KOMANG AYU PURNAMI", nisn: "0111244158", kelas: "9E" },
+            { nama: "Ni Komang Rasya Puspita Dewi", nisn: "0109425620", kelas: "9E" },
+            { nama: "Ni Komang Riska Mita Indah Pertiwi", nisn: "0104233622", kelas: "9E" },
+            { nama: "Ni Putu Glenis Taran Dewi", nisn: "0117148143", kelas: "9E" },
+            { nama: "NI PUTU KLARA MIRAH OKTAVIANI", nisn: "0111553155", kelas: "9E" },
+            { nama: "NI PUTU MAURA TITANIA AGUSTINA", nisn: "0115049155", kelas: "9E" },
+            { nama: "Ni Putu Sutia Indrayani", nisn: "0113408576", kelas: "9E" },
+            { nama: "NI WAYAN PUSPITA ANGGRENI", nisn: "0115512160", kelas: "9E" },
+            { nama: "Raihana Luthfia An Niar", nisn: "0111511281", kelas: "9E" },
+            { nama: "Ratta Juwita Hatta", nisn: "0111511101", kelas: "9E" },
+            { nama: "SAMUEL JERRYCHO", nisn: "0113332158", kelas: "9E" },
+            { nama: "TEGUH ARYO WICAKSONO", nisn: "0109963180", kelas: "9E" }
+        ];
+
+        // Fungsi Memeriksa NISN Siswa
+        function cekKelulusan() {
+            const inputVal = document.getElementById('nisnInput').value.trim();
+            const errorMsg = document.getElementById('errorMessage');
+            const searchSec = document.getElementById('searchSection');
+            const resultSec = document.getElementById('resultSection');
+
+            // Reset Error Message
+            errorMsg.classList.add('hidden');
+
+            if (inputVal === '') {
+                errorMsg.innerText = "⚠️ Harap masukkan nomor NISN Anda terlebih dahulu.";
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            // Cari data siswa berdasarkan NISN (Mendukung kecocokan string)
+            const siswa = dataSiswa.find(s => s.nisn === inputVal || parseInt(s.nisn) === parseInt(inputVal));
+
+            if (siswa) {
+                // Set data ke komponen Surat
+                document.getElementById('resNama').innerText = siswa.nama;
+                document.getElementById('resNisn').innerText = siswa.nisn;
+                document.getElementById('resKelas').innerText = siswa.kelas;
+
+                // Transisi Tampilan
+                searchSec.classList.add('hidden');
+                resultSec.classList.remove('hidden');
+            } else {
+                // Tampilkan pesan error jika data tidak ditemukan
+                errorMsg.innerText = "⚠️ Data NISN tidak ditemukan. Periksa kembali nomor yang Anda masukkan.";
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        // Fungsi Kembali ke Pencarian
+        function kembaliCari() {
+            document.getElementById('searchSection').classList.remove('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+            document.getElementById('nisnInput').value = '';
+        }
+    </script>
+</body>
+</html>
